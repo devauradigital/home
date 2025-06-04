@@ -59,17 +59,6 @@
     @keyframes blink {
       50% { opacity: 0; }
     }
-    .service-img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      transition: transform 0.3s ease;
-    }
-    .service-img:hover {
-      transform: scale(1.1);
-    }
   </style>
 </head>
 <body class="text-gray-200">
@@ -147,7 +136,7 @@
               {['Home', 'Services', 'Projects', 'Contact'].map((item) => (
                 <a 
                   key={item} 
-                  href={`#${item.toLowerCase()}`} 
+                  href={#${item.toLowerCase()}} 
                   className="text-gray-300 hover:text-purple-400 transition-all duration-300 hover:font-semibold"
                 >
                   {item}
@@ -167,13 +156,13 @@
           </div>
           <div 
             ref={menuRef}
-            className={`md:hidden mobile-menu ${isMenuOpen ? 'menu-visible' : 'menu-hidden'}`}
+            className={md:hidden mobile-menu ${isMenuOpen ? 'menu-visible' : 'menu-hidden'}}
           >
             <div className="flex flex-col items-center py-6 space-y-4">
               {['Home', 'Services', 'Projects', 'Contact'].map((item) => (
                 <a 
                   key={item} 
-                  href={`#${item.toLowerCase()}`} 
+                  href={#${item.toLowerCase()}} 
                   className="text-gray-300 hover:text-purple-400 text-lg font-medium transition-all duration-200" 
                   onClick={toggleMenu}
                 >
@@ -226,57 +215,21 @@
           <h2 className="text-4xl font-bold text-center text-gray-100 mb-16 animate-slide-in">Our Services</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { 
-                title: "Website & eCommerce Development", 
-                desc: "Custom websites and robust eCommerce platforms to boost your online presence.", 
-                img: "https://images.unsplash.com/photo-1516321310762-479437144403" // eCommerce website
-              },
-              { 
-                title: "Software Development", 
-                desc: "Bespoke software solutions tailored to optimize your business processes.", 
-                img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f" // Software coding
-              },
-              { 
-                title: "Cloud Storage Solutions", 
-                desc: "Secure and scalable cloud storage for efficient data management.", 
-                img: "https://images.unsplash.com/photo-1614064641936-44b9586b1120" // Cloud storage
-              },
-              { 
-                title: "Digital Marketing", 
-                desc: "Strategic campaigns to enhance your brand's reach and engagement.", 
-                img: "https://images.unsplash.com/photo-1557838923-2985c318be48" // Digital marketing
-              },
-              { 
-                title: "Social Media Branding", 
-                desc: "Creative strategies to build a strong social media presence.", 
-                img: "https://images.unsplash.com/photo-1611162617210-7d673bf0f7c7" // Social media
-              },
-              { 
-                title: "Search Engine Optimization (SEO)", 
-                desc: "Optimize your website to rank higher and attract more traffic.", 
-                img: "https://images.unsplash.com/photo-1542744094-3ea9c1d8f274" // SEO analytics
-              },
-              { 
-                title: "Graphic Design & Logo Creation", 
-                desc: "Unique and impactful designs to elevate your brand identity.", 
-                img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c" // Graphic design
-              },
-              { 
-                title: "UI/UX Design", 
-                desc: "Intuitive and engaging designs for seamless user experiences.", 
-                img: "https://images.unsplash.com/photo-1581291518857-4e26e9a4a69f" // UI/UX design
-              }
+              { title: "Website & eCommerce Development", desc: "Custom websites and robust eCommerce platforms to boost your online presence.", icon: "🛒" },
+              { title: "Software Development", desc: "Bespoke software solutions tailored to optimize your business processes.", icon: "💻" },
+              { title: "Cloud Storage Solutions", desc: "Secure and scalable cloud storage for efficient data management.", icon: "☁" },
+              { title: "Digital Marketing", desc: "Strategic campaigns to enhance your brand's reach and engagement.", icon: "📈" },
+              { title: "Social Media Branding", desc: "Creative strategies to build a strong social media presence.", icon: "📱" },
+              { title: "Search Engine Optimization (SEO)", desc: "Optimize your website to rank higher and attract more traffic.", icon: "🔍" },
+              { title: "Graphic Design & Logo Creation", desc: "Unique and impactful designs to elevate your brand identity.", icon: "✍" },
+              { title: "UI/UX Design", desc: "Intuitive and engaging designs for seamless user experiences.", icon: "🎨" }
             ].map((service, index) => (
               <div 
                 key={index} 
                 className="p-6 bg-gray-700 rounded-xl shadow-lg hover-scale animate-slide-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{ animationDelay: ${index * 0.1}s }}
               >
-                <img 
-                  src={service.img} 
-                  alt={service.title} 
-                  className="service-img"
-                />
+                <div className="text-5xl mb-4 animate-bounce">{service.icon}</div>
                 <h3 className="text-xl font-semibold text-purple-400 mb-3">{service.title}</h3>
                 <p className="text-gray-300 text-sm">{service.desc}</p>
               </div>
@@ -314,7 +267,7 @@
               <div 
                 key={index} 
                 className="bg-gray-700 rounded-xl shadow-lg overflow-hidden hover-scale animate-slide-in"
-                style={{ animationDelay: `${index * 0.2}s` }}
+                style={{ animationDelay: ${index * 0.2}s }}
               >
                 <a href={project.link} target="_blank" rel="noopener noreferrer">
                   <img src={project.img} alt={project.name} className="w-full h-48 object-cover" />
@@ -391,8 +344,8 @@
         } catch (error) {
           console.error('EmailJS error:', error);
           alert('Failed to send message. Please try again or contact us via WhatsApp.');
-          const whatsappMessage = `New Contact Form Submission\nName: ${formData.name}\nEmail: ${formData.email}\nMessage: ${formData.message}`;
-          const whatsappUrl = `https://wa.me/917859966310?text=${encodeURIComponent(whatsappMessage)}`;
+          const whatsappMessage = New Contact Form Submission\nName: ${formData.name}\nEmail: ${formData.email}\nMessage: ${formData.message};
+          const whatsappUrl = https://wa.me/917859966310?text=${encodeURIComponent(whatsappMessage)};
           window.open(whatsappUrl, '_blank');
         } finally {
           setIsSubmitting(false);
@@ -436,7 +389,7 @@
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Your Name"
-                      className={`w-full p-4 bg-gray-700 border ${errors.name ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200`}
+                      className={w-full p-4 bg-gray-700 border ${errors.name ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200}
                       required
                     />
                     {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
@@ -448,7 +401,7 @@
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Your Email"
-                      className={`w-full p-4 bg-gray-700 border ${errors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200`}
+                      className={w-full p-4 bg-gray-700 border ${errors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200}
                       required
                     />
                     {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -459,7 +412,7 @@
                       value={formData.message}
                       onChange={handleChange}
                       placeholder="Your Message"
-                      className={`w-full p-4 bg-gray-700 border ${errors.message ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200`}
+                      className={w-full p-4 bg-gray-700 border ${errors.message ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200}
                       rows="5"
                       required
                     ></textarea>
@@ -468,7 +421,7 @@
                   <button
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className={`w-full bg-orange-500 text-gray-100 px-6 py-4 rounded-lg font-semibold hover:bg-purple-400 transition-all duration-300 flex items-center justify-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'}`}
+                    className={w-full bg-orange-500 text-gray-100 px-6 py-4 rounded-lg font-semibold hover:bg-purple-400 transition-all duration-300 flex items-center justify-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'}}
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
