@@ -4,16 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DevAura - Software & Web Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.5/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js" defer></script>
   <style>
-    body { font-family: 'Inter', sans-serif; background-color: #1a1a2e; }
-    .gradient-bg { 
-      background: linear-gradient(135deg, #4c2c92, #d35400, #00a8b5); 
-      background-size: 200% 200%; 
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #1a1a2e;
+    }
+    h1, h2, h3 {
+      font-family: 'Poppins', sans-serif;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #4c2c92 0%, #d35400 50%, #00a8b5 100%);
+      background-size: 200% 200%;
       animation: gradientShift 15s ease infinite;
     }
     @keyframes gradientShift {
@@ -21,17 +29,18 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    .animate-slide-in { 
-      animation: slideIn 0.8s ease-out; 
-      animation-fill-mode: backwards;
+    .animate-slide-in {
+      animation: slideIn 0.8s ease-out forwards;
     }
-    @keyframes slideIn { 
-      from { opacity: 0; transform: translateY(30px); } 
-      to { opacity: 1; transform: translateY(0); } 
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .hover-scale:hover { 
-      transform: scale(1.05) rotate(1deg); 
-      transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    .hover-scale- {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-scale-:hover {
+      transform: scale(1.05) rotate(1deg);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     }
     .mobile-menu {
@@ -39,10 +48,14 @@
       top: 100%;
       left: 0;
       width: 100%;
-      background-color: #1f2937;
+      background-color: rgba(31, 41, 55, 0.95);
+      backdrop-filter: blur(10px);
       z-index: 40;
+      opacity: 0;
+      transform: translateY(-10%);
       transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-      transform: translateY(-100%);
+      overflow-x: auto; /* Allow horizontal scrolling if items overflow */
+      white-space: nowrap; /* Prevent wrapping of items */
     }
     .menu-visible {
       transform: translateY(0);
@@ -51,6 +64,7 @@
     .menu-hidden {
       transform: translateY(-10%);
       opacity: 0;
+      pointer-events: none;
     }
     .typing-text::after {
       content: '|';
@@ -58,6 +72,54 @@
     }
     @keyframes blink {
       50% { opacity: 0; }
+    }
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: #a855f7;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .project-overlay {
+      opacity: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0.8, 0.8), transparent);
+      transition: opacity 0.3s ease;
+    }
+    .project:hover .project-overlay {
+      opacity: 1;
+    }
+    .gradient-btn {
+      background: linear-gradient(to right, rgba(168deg, #a855f7, 1 0%), rgba(168deg, #f97316, 1 100%), transparent);
+      transition: background 0.3s ease;
+    }
+    .gradient-btn:hover {
+      background: linear-gradient(to right, #9333ea, #f59e0b);
+    }
+    .social-icon {
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+    .social-icon:hover {
+      transform: scale(1.2);
+      background-color: rgba(168, 85, 247, 0.2);
+      border-radius: 50%;
+    }
+    .form-input:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(168, 85, 247, 0.3);
     }
   </style>
 </head>
@@ -70,9 +132,12 @@
     const NavBar = () => {
       const [isMenuOpen, setIsMenuOpen] = useState(false);
       const menuRef = useRef(null);
+      const touchStartY = useRef(0);
+      const isSwiping = useRef(false);
 
-      const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
+      const toggleMenu = (e) => {
+        if (e) e.stopPropagation();
+        setIsMenuOpen(prev => !prev);
       };
 
       useEffect(() => {
@@ -84,44 +149,49 @@
 
         const handleTouchStart = (e) => {
           if (!isMenuOpen) return;
-          touchStartY = e.touches[0].clientY;
-          isSwiping = true;
+          touchStartY.current = e.touches[0].clientY;
+          isSwiping.current = true;
         };
 
         const handleTouchMove = (e) => {
-          if (!isMenuOpen || !isSwiping) return;
+          if (!isMenuOpen || !isSwiping.current) return;
           const touchCurrentY = e.touches[0].clientY;
-          const swipeDistance = touchCurrentY - touchStartY;
+          const swipeDistance = touchCurrentY - touchStartY.current;
 
-          if (Math.abs(swipeDistance) > 30) {
+          if (Math.abs(swipeDistance) > 20) {
             e.preventDefault();
           }
         };
 
         const handleTouchEnd = (e) => {
-          if (!isMenuOpen || !isSwiping) return;
+          if (!isMenuOpen || !isSwiping.current) return;
           const touchEndY = e.changedTouches[0].clientY;
-          const swipeDistance = touchEndY - touchStartY;
+          const swipeDistance = touchEndY - touchStartY.current;
 
-          if (Math.abs(swipeDistance) > 50) {
+          if (swipeDistance > 50) {
             setIsMenuOpen(false);
           }
-          isSwiping = false;
+          isSwiping.current = false;
         };
 
-        let touchStartY = 0;
-        let isSwiping = false;
+        const handleKeyDown = (e) => {
+          if (e.key === 'Escape' && isMenuOpen) {
+            setIsMenuOpen(false);
+          }
+        };
 
         document.addEventListener('click', handleClickOutside);
         document.addEventListener('touchstart', handleTouchStart);
-        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
         document.addEventListener('touchend', handleTouchEnd);
+        document.addEventListener('keydown', handleKeyDown);
 
         return () => {
           document.removeEventListener('click', handleClickOutside);
           document.removeEventListener('touchstart', handleTouchStart);
           document.removeEventListener('touchmove', handleTouchMove);
           document.removeEventListener('touchend', handleTouchEnd);
+          document.removeEventListener('keydown', handleKeyDown);
         };
       }, [isMenuOpen]);
 
@@ -137,14 +207,14 @@
                 <a 
                   key={item} 
                   href={`#${item.toLowerCase()}`} 
-                  className="text-gray-300 hover:text-purple-400 transition-all duration-300 hover:font-semibold"
+                  className="text-gray-300 hover:text-purple-400 transition-all duration-300 font-semibold nav-link"
                 >
                   {item}
                 </a>
               ))}
             </div>
             <button 
-              className="md:hidden text-gray-300 hover:text-purple-400 focus:outline-none" 
+              className="md:hidden text-gray-300 hover:text-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400" 
               onClick={toggleMenu}
               aria-label="Toggle menu"
               aria-expanded={isMenuOpen}
@@ -158,13 +228,14 @@
             ref={menuRef}
             className={`md:hidden mobile-menu ${isMenuOpen ? 'menu-visible' : 'menu-hidden'}`}
           >
-            <div className="flex flex-col items-center py-6 space-y-4">
+            <div className="flex flex-row justify-around py-4 space-x-4 px-4">
               {['Home', 'Services', 'Projects', 'Contact'].map((item) => (
                 <a 
                   key={item} 
                   href={`#${item.toLowerCase()}`} 
-                  className="text-gray-300 hover:text-purple-400 text-lg font-medium transition-all duration-200" 
+                  className="text-gray-300 hover:text-purple-400 text-base font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400" 
                   onClick={toggleMenu}
+                  tabIndex={isMenuOpen ? 0 : -1}
                 >
                   {item}
                 </a>
@@ -189,21 +260,42 @@
             clearInterval(typingInterval);
           }
         }, 50);
+
+        tsParticles.load("particles-js", {
+          particles: {
+            number: { value: 50, density: { enable: true, value_area: 800 } },
+            color: { value: "#ffffff" },
+            shape: { type: "circle" },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.2, width: 1 },
+            move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out", bounce: false }
+          },
+          interactivity: {
+            events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } },
+            modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+          },
+          retina_detect: true
+        });
+
         return () => clearInterval(typingInterval);
       }, []);
 
       return (
-        <section id="home" className="gradient-bg text-gray-100 py-24 text-center relative overflow-hidden">
+        <section id="home" className="gradient-bg text-gray-100 py-32 text-center relative overflow-hidden">
+          <div id="particles-js" className="absolute inset-0 opacity-30"></div>
           <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926')] bg-cover bg-center animate-pulse"></div>
           <div className="max-w-5xl mx-auto px-4 animate-slide-in relative z-10">
-            <h2 className="text-4xl sm:text-6xl font-extrabold mb-6 drop-shadow-lg">Empowering Your Business Growth</h2>
-            <p className="text-lg sm:text-xl mb-8 typing-text">{text}</p>
-            <a 
+            <h2 className="text-4xl sm:text-6xl font-extrabold mb-6 drop-shadow-lg text-white">Empowering Your Business Growth</h2>
+            <p className="text-lg sm:text-xl mb-8 typing-text text-gray-200">{text}</p>
+            <div className="flex justify-center">
+              <a 
               href="#contact" 
               className="bg-purple-500 text-gray-100 px-8 py-4 rounded-full font-semibold hover:bg-orange-500 transition-all duration-300 hover:shadow-lg"
             >
-              Get Started
-            </a>
+                Get Started
+              </a>
+            </div>
           </div>
         </section>
       );
@@ -217,20 +309,20 @@
             {[
               { title: "Website & eCommerce Development", desc: "Custom websites and robust eCommerce platforms to boost your online presence.", icon: "🛒" },
               { title: "Software Development", desc: "Bespoke software solutions tailored to optimize your business processes.", icon: "💻" },
-              { title: "Cloud Storage Solutions", desc: "Secure and scalable cloud storage for efficient data management.", icon: "☁" },
+              { title: "Cloud Storage Solutions", desc: "Secure and scalable cloud storage for efficient data management.", icon: "☁️" },
               { title: "Digital Marketing", desc: "Strategic campaigns to enhance your brand's reach and engagement.", icon: "📈" },
               { title: "Social Media Branding", desc: "Creative strategies to build a strong social media presence.", icon: "📱" },
               { title: "Search Engine Optimization (SEO)", desc: "Optimize your website to rank higher and attract more traffic.", icon: "🔍" },
-              { title: "Graphic Design & Logo Creation", desc: "Unique and impactful designs to elevate your brand identity.", icon: "✍" },
+              { title: "Graphic Design & Tailwind", desc: "Unique and impactful designs to elevate your brand identity.", icon: "✨️" },
               { title: "UI/UX Design", desc: "Intuitive and engaging designs for seamless user experiences.", icon: "🎨" }
             ].map((service, index) => (
               <div 
                 key={index} 
-                className="p-6 bg-gray-700 rounded-xl shadow-lg hover-scale animate-slide-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="p-6 rounded-xl shadow-lg hover-scale-glass-card animate-slide-in"
+                style={{ animationDelay: `${index * 0.8}s` }}
               >
-                <div className="text-5xl mb-4">{service.icon}</div>
-                <h3 className="text-xl font-semibold text-purple-400 mb-3">{service.title}</h3>
+                <div className="text-5xl mb-4 text-purple-400">{service.icon}</div>
+                <h3 className="text-xl font-semibold text-white mb-3">{service.title}</h3>
                 <p className="text-gray-300 text-sm">{service.desc}</p>
               </div>
             ))}
@@ -252,7 +344,7 @@
                 link: "https://ypsyouknow.github.io/sonilawyers/" 
               },
               { 
-                name: "Employee Management Web App", 
+                name: "Employee Management System", 
                 desc: "An application to manage employee records and performance.", 
                 img: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg", 
                 link: "https://joyful-kitsune-d92044.netlify.app/" 
@@ -266,11 +358,14 @@
             ].map((project, index) => (
               <div 
                 key={index} 
-                className="bg-gray-700 rounded-xl shadow-lg overflow-hidden hover-scale animate-slide-in"
+                className="bg-gray-700 rounded-xl shadow-lg overflow-hidden hover-scale- animate-slide-in relative project"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <a href={project.link} target="_blank" rel="noopener noreferrer">
                   <img src={project.img} alt={project.name} className="w-full h-48 object-cover" />
+                  <div className="project-overlay absolute inset-0 flex items-center justify-center">
+                    <span className="text-white font-semibold bg-purple-500 px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">View Project</span>
+                  </div>
                   <div className="p-6">
                     <h3 className="text-xl font-semibold text-cyan-400 mb-3">{project.name}</h3>
                     <p className="text-gray-300 text-sm">{project.desc}</p>
@@ -357,27 +452,27 @@
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="animate-slide-in">
-                <div className=" mb-6">
+                <div className="flex justify-lefts mb-6">
                   <img 
-                    src="devauralogo.png" 
+                    src="C:\Users\AKSHAT\Desktop\devaura project's\devauralogo.png" 
                     alt="DevAura Logo" 
                     className="h-20 w-20 object-contain"
                   />
                 </div>
-                <div className="text-left mb-6">
+                <div className="text-center lg:text-left mb-6">
                   <p className="text-gray-300 text-base">
-                    DevAura is a leading digital solutions<br/>
-                    provider, specializing in innovative<br/>
-                    SEO, Software and Web Development. We<br/>
-                    empower startups and businesses with<br/>
-                    custom solutions to boost online presence.
+                    DevAura is a leading digital solutions provider,<br/>
+                    specializing in innovative SEO, Software, and <br/>
+                    Web Development. We empower startups and <br/>
+                    businesses with custom solutions to boost <br/> 
+                    their online presence.<br/>
                   </p>
                   <br/>
                 </div>
-                <h3 className="text-2xl font-semibold text-purple-400 mb-6">Get in Touch</h3>
-                <p className="text-gray-300 mb-4"><b>Email</b>: devauradigital@gmail.com</p>
-                <p className="text-gray-300 mb-4"><b>Phone</b>: +91 7859966310</p>
-                <div className="flex space-x-4 mt-8">
+                <h3 className="text-2xl font-semibold text-purple-400 mb-6 text-center lg:text-left">Get in Touch</h3>
+                <p className="text-gray-300 mb-4 text-center lg:text-left"><b>Email</b>: devauradigital@gmail.com</p>
+                <p className="text-gray-300 mb-4 text-center lg:text-left"><b>Phone</b>: +91 7859966310</p>
+                <div className="flex justify-center lg:justify-start space-x-4 mt-8">
                   <a 
                     href="https://wa.me/917859966310" 
                     target="_blank" 
@@ -406,7 +501,7 @@
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Your Name"
-                      className={`w-full p-4 bg-gray-700 border ${errors.name ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200`}
+                      className={`w-full p-4 bg-gray-700 border ${errors.name ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200 form-input`}
                       required
                     />
                     {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
@@ -418,7 +513,7 @@
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Your Email"
-                      className={`w-full p-4 bg-gray-700 border ${errors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200`}
+                      className={`w-full p-4 bg-gray-700 border ${errors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200 form-input`}
                       required
                     />
                     {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -429,7 +524,7 @@
                       value={formData.message}
                       onChange={handleChange}
                       placeholder="Your Message"
-                      className={`w-full p-4 bg-gray-700 border ${errors.message ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200`}
+                      className={`w-full p-4 bg-gray-700 border ${errors.message ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-200 transition-all duration-200 form-input`}
                       rows="5"
                       required
                     ></textarea>
@@ -468,7 +563,7 @@
                 href={social.href} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="hover:text-purple-400 transition-all duration-300 hover:scale-125"
+                className="hover:text-purple-400 transition-all duration-300 social-icon p-2"
               >
                 {social.icon}
               </a>
