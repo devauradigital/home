@@ -59,9 +59,21 @@
     @keyframes blink {
       50% { opacity: 0; }
     }
+    .service-img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .service-img:hover {
+      transform: scale(1.08);
+      opacity: 0.95;
+    }
   </style>
 </head>
-<body class="text-gray-200">
+<body className="text-gray-200">
   <div id="root"></div>
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
@@ -215,23 +227,67 @@
           <h2 className="text-4xl font-bold text-center text-gray-100 mb-16 animate-slide-in">Our Services</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Website & eCommerce Development", desc: "Custom websites and robust eCommerce platforms to boost your online presence.", icon: "🛒" },
-              { title: "Software Development", desc: "Bespoke software solutions tailored to optimize your business processes.", icon: "💻" },
-              { title: "Cloud Storage Solutions", desc: "Secure and scalable cloud storage for efficient data management.", icon: "☁️" },
-              { title: "Digital Marketing", desc: "Strategic campaigns to enhance your brand's reach and engagement.", icon: "📈" },
-              { title: "Social Media Branding", desc: "Creative strategies to build a strong social media presence.", icon: "📱" },
-              { title: "Search Engine Optimization (SEO)", desc: "Optimize your website to rank higher and attract more traffic.", icon: "🔍" },
-              { title: "Graphic Design & Logo Creation", desc: "Unique and impactful designs to elevate your brand identity.", icon: "✍️" },
-              { title: "UI/UX Design", desc: "Intuitive and engaging designs for seamless user experiences.", icon: "🎨" }
+              { 
+                title: "Website & eCommerce Development", 
+                desc: "Custom websites and robust eCommerce platforms to boost your online presence.", 
+                img: "custom_ecommerce_dev.jpg", // Placeholder for custom-generated image
+                imgDesc: "A vibrant image of a sleek eCommerce website displayed on a laptop screen, featuring a modern online store with animated product cards, a shopping cart icon pulsing subtly, and a clean, responsive layout with vibrant colors like teal and orange."
+              },
+              { 
+                title: "Software Development", 
+                desc: "Bespoke software solutions tailored to optimize your business processes.", 
+                img: "custom_software_dev.jpg", // Placeholder for custom-generated image
+                imgDesc: "A dynamic image of a dark-themed code editor on a monitor, with glowing lines of code in vibrant colors (e.g., blue, green, purple), showcasing a modern software development environment with subtle animations like scrolling code or a compiling progress bar."
+              },
+              { 
+                title: "Cloud Storage Solutions", 
+                desc: "Secure and scalable cloud storage for efficient data management.", 
+                img: "custom_cloud_storage.jpg", // Placeholder for custom-generated image
+                imgDesc: "A futuristic image of a cloud server room with glowing blue holographic clouds floating above sleek server racks, animated with subtle light pulses to symbolize secure, scalable data storage."
+              },
+              { 
+                title: "Digital Marketing", 
+                desc: "Strategic campaigns to enhance your brand's reach and engagement.", 
+                img: "custom_digital_marketing.jpg", // Placeholder for custom-generated image
+                imgDesc: "A lively image of a digital dashboard on a tablet, displaying animated charts, social media metrics, and campaign analytics with vibrant colors like purpleFujitsu and red, with dynamic elements like a world map highlighting global reach or a rising graph."
+              },
+              { 
+                title: "Social Media Branding", 
+                desc: "Creative strategies to build a strong social media presence.", 
+                img: "custom_social_media_branding.jpg", // Placeholder for custom-generated image
+                imgDesc: "A colorful image of a smartphone displaying a social media feed with vibrant brand posts, featuring animated elements like likes, comments, and shares popping up, with a modern aesthetic using bold colors like pink and cyan."
+              },
+              { 
+                title: "Search Engine Optimization (SEO)", 
+                desc: "Optimize your website to rank higher and attract more traffic.", 
+                img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f" // Retained as per user feedback
+              },
+              { 
+                title: "Graphic Design & Logo Creation", 
+                desc: "Unique and impactful designs to elevate your brand identity.", 
+                img: "custom_graphic_design.jpg", // Placeholder for custom-generated image
+                imgDesc: "A creative image of a designer’s workspace with a tablet displaying a colorful logo design, surrounded by art tools and vibrant color swatches, with a subtle animation of the logo transitioning between color variations."
+              },
+              { 
+                title: "UI/UX Design", 
+                desc: "Intuitive and engaging designs for seamless user experiences.", 
+                img: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e" // Retained as per user feedback
+              }
             ].map((service, index) => (
               <div 
                 key={index} 
                 className="p-6 bg-gray-700 rounded-xl shadow-lg hover-scale animate-slide-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="text-5xl mb-4 animate-bounce">{service.icon}</div>
+                <img 
+                  src={service.img} 
+                  alt={service.title} 
+                  className="service-img" 
+                  onError={(e) => { e.target.src = 'https://via.placeholder.com/300x140?text=' + encodeURIComponent(service.title); }} 
+                />
                 <h3 className="text-xl font-semibold text-purple-400 mb-3">{service.title}</h3>
                 <p className="text-gray-300 text-sm">{service.desc}</p>
+                {service.imgDesc && <p className="text-gray-400 text-xs mt-2 italic">{service.imgDesc}</p>}
               </div>
             ))}
           </div>
