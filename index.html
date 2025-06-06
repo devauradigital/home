@@ -102,8 +102,16 @@
     }
     .glass-card {
       background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    @media (max-width: 639px) {
+      .glass-card {
+        backdrop-filter: none;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
     }
     .project-overlay {
       opacity: 0;
@@ -138,7 +146,18 @@
       transition: max-height 0.3s ease-out;
     }
     .accordion-content.open {
-      max-height: none;
+      max-height: 200px; /* Set a specific max-height for the open state */
+    }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 2rem;
+      align-items: start; /* Ensure each grid item takes only the space it needs */
+    }
+    @media (min-width: 1024px) {
+      .faq-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
     .sr-only {
       position: absolute;
@@ -161,6 +180,38 @@
       height: 100%;
       object-fit: cover;
       object-position: center;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .services-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (min-width: 1024px) {
+      .services-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: auto auto;
+      }
+      .services-grid .row-2 {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        grid-column: 1 / -1;
+      }
+      .services-grid .row-2 > a {
+        flex: 0 1 auto;
+        width: 33.3333%;
+        max-width: 400px;
+      }
+    }
+    @media (max-width: 639px) {
+      .services-grid .row-2 {
+        display: contents;
+      }
     }
   </style>
 </head>
@@ -410,8 +461,8 @@
       <section id="services" className="py-20 bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-center text-gray-100 mb-16 animate-slide-in">Our Services</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {data.services.map((service, index) => (
+          <div className="services-grid">
+            {data.services.slice(0, 3).map((service, index) => (
               <a
                 key={index}
                 href={`service-detail.html?service=${encodeURIComponent(service.title)}`}
@@ -425,6 +476,22 @@
                 <p className="text-gray-300 text-sm">{service.desc}</p>
               </a>
             ))}
+            <div className="row-2">
+              {data.services.slice(3).map((service, index) => (
+                <a
+                  key={index + 3}
+                  href={`service-detail.html?service=${encodeURIComponent(service.title)}`}
+                  rel="noopener noreferrer"
+                  className={`p-6 rounded-xl shadow-lg hover-scale glass-card animate-slide-in animate-slide-in-delay-${index + 3}`}
+                >
+                  <div className="service-image-container">
+                    <img src={service.icon} alt={service.title} className="service-image" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-purple-400 mb-3">{service.title}</h3>
+                  <p className="text-gray-300 text-sm">{service.desc}</p>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -488,7 +555,7 @@
         <section id="faq" className="py-20 bg-gray-900">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-4xl font-bold text-center text-gray-100 mb-16 animate-slide-in">Frequently Asked Questions</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="faq-grid">
               {data.faqs.map((faq, index) => (
                 <div
                   key={index}
@@ -528,7 +595,6 @@
       const [submitStatus, setSubmitStatus] = useState(null);
 
       useEffect(() => {
-        // Note: Replace with environment variable or server-side handling
         emailjs.init("dSlgqCLBZsVf6odhG");
       }, []);
 
